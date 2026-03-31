@@ -497,12 +497,12 @@ html, body { height: 100%; background: var(--gray-50); color: var(--gray-900); f
     <div class="login-logo"><span class="me">ME</span><span class="a">A</span></div>
     <div class="login-sub">Shelter Portal</div>
     <form id="login-form">
-      <input class="login-field" type="email" id="login-email" placeholder="Email" value="coordinator@pinestreetinn.org" autocomplete="email">
+      <input class="login-field" type="email" id="login-email" placeholder="Email" value="coordinator@gavinfoundation.org" autocomplete="email">
       <input class="login-field" type="password" id="login-pass" placeholder="Password" value="4321" autocomplete="current-password">
       <button class="login-btn" type="submit">Sign In</button>
       <div class="login-error" id="login-error"></div>
     </form>
-    <div class="login-hint">Demo: coordinator@pinestreetinn.org / 4321</div>
+    <div class="login-hint">Demo: coordinator@gavinfoundation.org / 4321</div>
   </div>
 </div>
 
@@ -558,7 +558,7 @@ html, body { height: 100%; background: var(--gray-50); color: var(--gray-900); f
     <div class="topbar">
       <div>
         <div class="topbar-title" id="topbar-title">Dashboard</div>
-        <div class="topbar-subtitle" id="topbar-subtitle">Pine Street Inn &mdash; Real-time shelter management</div>
+        <div class="topbar-subtitle" id="topbar-subtitle">Gavin House &mdash; Real-time shelter management</div>
       </div>
       <div class="topbar-right">
         <div id="connection-badge" class="live-badge demo-badge"><span class="dot"></span> DEMO</div>
@@ -675,7 +675,7 @@ let soundAlerts = false;
 let alertedVouchers = new Set();
 
 // ── DEMO DATA ──
-const DEMO_PROFILE = { org_name: 'Pine Street Inn', org_type: 'shelter', address: '444 Harrison Ave, Boston, MA 02118' };
+const DEMO_PROFILE = { org_name: 'Gavin House', org_type: 'shelter', address: '675 E 4th St, Boston, MA 02127' };
 
 const now = new Date();
 let DEMO_BEDS = [
@@ -884,7 +884,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
   }
 
   // Demo fallback
-  if (email === 'coordinator@pinestreetinn.org' && pass === '4321') {
+  if (email === 'coordinator@gavinfoundation.org' && pass === '4321') {
     IS_LIVE = false;
     enterApp();
   } else {
@@ -934,7 +934,7 @@ function switchScreen(screen) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('screen-' + screen).classList.add('active');
   const titles = { dashboard: 'Dashboard', beds: 'Bed Management', vouchers: 'Vouchers', timers: 'Active Timers' };
-  const subs = { dashboard: 'Pine Street Inn \u2014 Real-time shelter management', beds: 'Floor-by-floor bed status and assignment', vouchers: 'DA voucher processing and history', timers: 'Live countdown timers for active vouchers' };
+  const subs = { dashboard: 'Gavin House \u2014 Real-time shelter management', beds: 'Floor-by-floor bed status and assignment', vouchers: 'DA voucher processing and history', timers: 'Live countdown timers for active vouchers' };
   document.getElementById('topbar-title').textContent = titles[screen] || '';
   document.getElementById('topbar-subtitle').textContent = subs[screen] || '';
   renderAll();
