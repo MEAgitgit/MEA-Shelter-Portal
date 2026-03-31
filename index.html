@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1440">
+<title>MEA — Shelter Portal</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'><rect width='36' height='36' rx='7' fill='%233A9AE8'/><text x='18' y='27' font-family='Arial Black,sans-serif' font-size='22' font-weight='900' text-anchor='middle' fill='white'>M</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ── LOCAL FONTS ── */
+@font-face { font-family: 'Gilroy'; src: local('Gilroy-ExtraBold'), local('Gilroy ExtraBold'); font-weight: 800; font-style: normal; }
+@font-face { font-family: 'Gilroy'; src: local('Gilroy-Bold'), local('Gilroy Bold'); font-weight: 700; font-style: normal; }
+@font-face { font-family: 'Gilroy'; src: local('Gilroy-SemiBold'), local('Gilroy SemiBold'); font-weight: 600; font-style: normal; }
+@font-face { font-family: 'Gilroy'; src: local('Gilroy-Medium'), local('Gilroy Medium'); font-weight: 500; font-style: normal; }
+@font-face { font-family: 'Gilroy'; src: local('Gilroy-Regular'), local('Gilroy Regular'); font-weight: 400; font-style: normal; }
+@font-face { font-family: 'Neue Montreal'; src: local('NeueMontreal-Bold'), local('Neue Montreal Bold'); font-weight: 700; font-style: normal; }
+@font-face { font-family: 'Neue Montreal'; src: local('NeueMontreal-Medium'), local('Neue Montreal Medium'); font-weight: 500; font-style: normal; }
+@font-face { font-family: 'Neue Montreal'; src: local('NeueMontreal-Regular'), local('Neue Montreal Regular'); font-weight: 400; font-style: normal; }
+
+/* ── RESET & BASE ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --blue:       #1442D9;
+  --blue-d:     #0F33B5;
+  --blue-l:     #DCF0FB;
+  --baby-blue:  #82CBF5;
+  --baby-mid:   #4EB3EE;
+  --baby-pale:  #EAF6FD;
+  --navy:       #0A1628;
+  --navy-70:    rgba(10,22,40,.7);
+  --green:      #22C55E;
+  --green-l:    #DCFCE7;
+  --red:        #EF4444;
+  --red-l:      #FEE2E2;
+  --amber:      #F59E0B;
+  --amber-l:    #FEF3C7;
+  --gray-50:    #EEF5FF;
+  --gray-100:   #E4EFFA;
+  --gray-200:   #D2E6F5;
+  --gray-300:   #B0CEEA;
+  --gray-400:   #7AAFD4;
+  --gray-500:   #4A7FA0;
+  --gray-700:   #1E4D6B;
+  --gray-900:   #0A1628;
+  --sidebar-w: 240px;
+  --header-h:  64px;
+  --font-h: 'Gilroy', 'Plus Jakarta Sans', sans-serif;
+  --font-b: 'Neue Montreal', 'DM Sans', 'Inter', sans-serif;
+}
+html, body { height: 100%; background: var(--gray-50); color: var(--gray-900); font-family: var(--font-b); font-size: 14px; line-height: 1.5; }
+
+/* ── LOGIN ── */
+.login-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: linear-gradient(135deg, #060A1E 0%, #0A1628 40%, #0F1F3D 100%);
+  display: flex; align-items: center; justify-content: center;
+}
+.login-overlay.hidden { display: none; }
+.login-card {
+  background: rgba(255,255,255,.04); border: 1px solid rgba(130,203,245,.15);
+  border-radius: 20px; padding: 48px 40px; width: 400px; text-align: center;
+  backdrop-filter: blur(20px);
+}
+.login-logo {
+  font-family: var(--font-h); font-weight: 900; font-size: 42px;
+  letter-spacing: -0.5px; line-height: 1; margin-bottom: 4px; user-select: none;
+}
+.login-logo .me { color: #3A9AE8; }
+.login-logo .a { background: linear-gradient(90deg, #3A9AE8, #82CBF5); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.login-sub { font-size: 11px; color: rgba(130,203,245,.5); font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 36px; }
+.login-field {
+  width: 100%; padding: 12px 16px; border-radius: 10px; border: 1px solid rgba(130,203,245,.2);
+  background: rgba(255,255,255,.06); color: #fff; font-size: 14px; font-family: var(--font-b);
+  outline: none; transition: border-color .15s; margin-bottom: 12px;
+}
+.login-field::placeholder { color: rgba(255,255,255,.3); }
+.login-field:focus { border-color: var(--baby-blue); }
+.login-btn {
+  width: 100%; padding: 12px; border-radius: 10px; border: none;
+  background: var(--blue); color: #fff; font-size: 14px; font-weight: 700;
+  font-family: var(--font-b); cursor: pointer; transition: background .15s;
+  margin-top: 8px;
+}
+.login-btn:hover { background: var(--blue-d); }
+.login-error { color: var(--red); font-size: 12px; margin-top: 10px; min-height: 18px; }
+.login-hint { color: rgba(255,255,255,.25); font-size: 11px; margin-top: 16px; }
+
+/* ── LAYOUT ── */
+.shell { display: flex; height: 100vh; overflow: hidden; }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: var(--sidebar-w); flex-shrink: 0;
+  background: var(--navy); color: #fff;
+  display: flex; flex-direction: column;
+  overflow: hidden; position: relative;
+}
+.sidebar::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 120px;
+  background: linear-gradient(160deg, rgba(130,203,245,.15) 0%, transparent 100%);
+  pointer-events: none;
+}
+.sidebar-logo {
+  display: flex; align-items: center; gap: 10px;
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid rgba(130,203,245,.12);
+  position: relative;
+}
+.mea-wordmark {
+  display: flex; align-items: baseline;
+  font-family: var(--font-h); font-weight: 900; font-size: 28px;
+  letter-spacing: -0.5px; line-height: 1; user-select: none;
+}
+.mea-wordmark .mea-me { color: #3A9AE8; }
+.mea-wordmark .mea-a {
+  background: linear-gradient(90deg, #3A9AE8 0%, #82CBF5 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.logo-sub {
+  font-size: 10px; color: rgba(130,203,245,.6); font-weight: 500;
+  letter-spacing: .6px; text-transform: uppercase; margin-top: 2px; white-space: nowrap;
+}
+
+.sidebar-section-label {
+  font-size: 10px; font-weight: 600; letter-spacing: .8px; text-transform: uppercase;
+  color: rgba(255,255,255,.3); padding: 20px 20px 6px;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 20px; cursor: pointer;
+  font-size: 13.5px; font-weight: 500; color: rgba(255,255,255,.6);
+  border-left: 3px solid transparent; transition: all .15s;
+}
+.nav-item:hover { color: #fff; background: rgba(255,255,255,.05); }
+.nav-item.active { color: #fff; background: rgba(130,203,245,.12); border-left-color: var(--baby-blue); }
+.nav-item .nav-icon { width: 18px; text-align: center; font-size: 15px; flex-shrink: 0; }
+.nav-badge {
+  margin-left: auto; background: var(--baby-blue); color: var(--navy);
+  font-size: 11px; font-weight: 700; border-radius: 10px; padding: 1px 7px;
+}
+.nav-badge.amber { background: var(--amber); color: #fff; }
+.nav-badge.red { background: var(--red); color: #fff; animation: pulse-badge 2s infinite; }
+@keyframes pulse-badge { 0%,100%{opacity:1}50%{opacity:.6} }
+
+.sidebar-footer {
+  margin-top: auto; border-top: 1px solid rgba(130,203,245,.12);
+  padding: 16px 20px;
+}
+.user-chip { display: flex; align-items: center; gap: 10px; }
+.user-avatar {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: var(--blue); display: flex; align-items: center;
+  justify-content: center; font-weight: 700; font-size: 13px; color: #fff; flex-shrink: 0;
+}
+.user-name { font-size: 13px; font-weight: 600; color: #fff; }
+.user-role { font-size: 11px; color: rgba(255,255,255,.4); }
+.logout-btn {
+  margin-left: auto; background: none; border: none; color: rgba(255,255,255,.3);
+  cursor: pointer; font-size: 16px; transition: color .15s;
+}
+.logout-btn:hover { color: var(--red); }
+
+/* ── MAIN ── */
+.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+
+/* ── TOP BAR ── */
+.topbar {
+  height: var(--header-h); flex-shrink: 0;
+  background: #fff; border-bottom: 1px solid var(--gray-200);
+  display: flex; align-items: center; padding: 0 28px; gap: 16px;
+  box-shadow: 0 1px 0 rgba(130,203,245,.2);
+}
+.topbar-title { font-family: var(--font-h); font-weight: 700; font-size: 17px; color: var(--gray-900); }
+.topbar-subtitle { font-size: 13px; color: var(--gray-500); }
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+.live-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(34,197,94,.1); color: var(--green); font-size: 11px;
+  font-weight: 700; letter-spacing: .5px; padding: 4px 10px; border-radius: 20px;
+}
+.live-badge .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: pulse-dot 2s infinite; }
+.demo-badge { background: rgba(245,158,11,.1); color: var(--amber); }
+.demo-badge .dot { background: var(--amber); }
+@keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)} }
+
+/* ── CONTENT ── */
+.content { flex: 1; overflow-y: auto; padding: 28px; }
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* ── BUTTONS ── */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 16px; border-radius: 8px; font-size: 13px;
+  font-weight: 600; cursor: pointer; border: none; transition: all .15s; font-family: var(--font-b);
+}
+.btn-primary { background: var(--blue); color: #fff; }
+.btn-primary:hover { background: var(--blue-d); }
+.btn-outline { background: #fff; color: var(--gray-700); border: 1.5px solid var(--gray-200); }
+.btn-outline:hover { border-color: var(--blue); color: var(--blue); }
+.btn-green { background: var(--green); color: #fff; }
+.btn-green:hover { background: #16A34A; }
+.btn-red { background: transparent; color: var(--red); border: 1.5px solid var(--red-l); }
+.btn-red:hover { background: var(--red-l); }
+.btn-red-solid { background: var(--red); color: #fff; border: none; }
+.btn-red-solid:hover { background: #DC2626; }
+.btn-amber { background: var(--amber); color: #fff; }
+.btn-sm { padding: 5px 12px; font-size: 12px; border-radius: 6px; }
+.btn-lg { padding: 10px 24px; font-size: 14px; border-radius: 10px; }
+.btn:disabled { opacity: .5; cursor: not-allowed; pointer-events: none; }
+
+/* ── STAT CARDS ── */
+.stats-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-bottom: 28px; }
+.stat-card {
+  background: #fff; border-radius: 12px; padding: 20px;
+  border: 1px solid #D2E9F7; display: flex; flex-direction: column; gap: 4px;
+  box-shadow: 0 1px 4px rgba(20,80,140,.04);
+  border-top: 3px solid var(--baby-blue);
+  position: relative;
+}
+.stat-card.green { border-top-color: var(--green); }
+.stat-card.amber { border-top-color: var(--amber); }
+.stat-card.red { border-top-color: var(--red); }
+.stat-label { font-size: 12px; font-weight: 500; color: var(--gray-500); text-transform: uppercase; letter-spacing: .5px; }
+.stat-value { font-family: var(--font-h); font-weight: 800; font-size: 32px; color: var(--gray-900); line-height: 1.1; }
+.stat-sub { font-size: 12px; color: var(--gray-400); }
+.stat-icon { position: absolute; top: 16px; right: 16px; font-size: 22px; opacity: .5; }
+.stat-bar { height: 6px; border-radius: 3px; background: var(--gray-100); margin-top: 8px; overflow: hidden; }
+.stat-bar-fill { height: 100%; border-radius: 3px; transition: width .6s ease; }
+.pulsing-dot {
+  display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--amber); margin-right: 6px; vertical-align: middle;
+  animation: pulse-dot 1.5s infinite;
+}
+
+/* ── SECTION HEADERS ── */
+.section-header {
+  font-family: var(--font-h); font-weight: 700; font-size: 16px;
+  color: var(--gray-900); margin-bottom: 16px; display: flex; align-items: center; gap: 8px;
+}
+.section-header .count-badge {
+  background: var(--blue-l); color: var(--blue); font-size: 11px;
+  font-weight: 700; padding: 2px 8px; border-radius: 10px;
+}
+
+/* ── VOUCHER TIMER CARD ── */
+.timer-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 20px; margin-bottom: 32px; }
+.timer-card {
+  background: #fff; border-radius: 16px; padding: 24px;
+  border: 1px solid var(--gray-200);
+  box-shadow: 0 2px 8px rgba(20,80,140,.06);
+  display: flex; gap: 24px; align-items: center;
+  transition: all .3s;
+}
+.timer-card.urgent { border-color: var(--red); box-shadow: 0 0 0 1px var(--red), 0 4px 20px rgba(239,68,68,.15); }
+.timer-card.warning { border-color: var(--amber); box-shadow: 0 0 0 1px var(--amber), 0 4px 20px rgba(245,158,11,.1); }
+.timer-card.expired { opacity: .6; border-color: var(--gray-200); }
+.timer-card.flash { animation: flash-card 1s infinite; }
+@keyframes flash-card {
+  0%,100% { background: #fff; }
+  50% { background: #FEF2F2; }
+}
+
+.timer-ring-wrap {
+  flex-shrink: 0; width: 120px; height: 120px; position: relative;
+  display: flex; align-items: center; justify-content: center;
+}
+.timer-ring-wrap.lg { width: 160px; height: 160px; }
+.timer-ring {
+  width: 100%; height: 100%; transform: rotate(-90deg);
+}
+.timer-ring-bg { fill: none; stroke: var(--gray-100); stroke-width: 6; }
+.timer-ring-fg { fill: none; stroke: var(--green); stroke-width: 6; stroke-linecap: round; transition: stroke-dashoffset .5s linear, stroke .3s; }
+.timer-time {
+  position: absolute; inset: 0; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  font-family: var(--font-h); font-weight: 800; font-size: 28px; color: var(--gray-900);
+  line-height: 1;
+}
+.timer-time.lg { font-size: 42px; }
+.timer-time .label { font-size: 10px; font-weight: 500; color: var(--gray-400); text-transform: uppercase; letter-spacing: .5px; margin-top: 2px; }
+.timer-time.expired-text { color: var(--gray-400); font-size: 18px; }
+
+.timer-info { flex: 1; min-width: 0; }
+.timer-name { font-family: var(--font-h); font-weight: 700; font-size: 18px; color: var(--gray-900); margin-bottom: 2px; }
+.timer-name.lg { font-size: 24px; }
+.timer-issuer { font-size: 13px; color: var(--gray-500); margin-bottom: 2px; }
+.timer-issued-time { font-size: 12px; color: var(--gray-400); margin-bottom: 4px; }
+.timer-notes { font-size: 12px; color: var(--gray-400); font-style: italic; margin-bottom: 12px; background: var(--gray-50); padding: 6px 10px; border-radius: 6px; }
+.timer-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.expired-badge {
+  display: inline-block; background: var(--gray-200); color: var(--gray-500);
+  font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 6px;
+  text-transform: uppercase; letter-spacing: .5px;
+}
+.arrived-badge { background: var(--green-l); color: var(--green); }
+
+/* ── FULL-SCREEN TIMER (Active Timers page) ── */
+.timer-full-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(440px, 1fr)); gap: 24px; }
+.timer-card-full {
+  background: #fff; border-radius: 20px; padding: 32px;
+  border: 1px solid var(--gray-200);
+  box-shadow: 0 4px 16px rgba(20,80,140,.06);
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+  transition: all .3s;
+}
+.timer-card-full.urgent { border-color: var(--red); box-shadow: 0 0 0 2px var(--red), 0 8px 32px rgba(239,68,68,.2); }
+.timer-card-full.warning { border-color: var(--amber); box-shadow: 0 0 0 2px var(--amber), 0 8px 32px rgba(245,158,11,.15); }
+.timer-card-full.flash { animation: flash-card 1s infinite; }
+.timer-card-full .timer-actions { justify-content: center; margin-top: 16px; }
+.timer-card-full .timer-info { text-align: center; margin-top: 16px; }
+
+/* ── ACTIVITY LOG ── */
+.activity-log {
+  background: #fff; border-radius: 12px; border: 1px solid var(--gray-200);
+  box-shadow: 0 1px 4px rgba(20,80,140,.04);
+}
+.activity-log .log-header {
+  padding: 16px 20px; border-bottom: 1px solid var(--gray-100);
+  font-family: var(--font-h); font-weight: 700; font-size: 14px; color: var(--gray-900);
+}
+.log-item {
+  padding: 12px 20px; border-bottom: 1px solid var(--gray-50);
+  display: flex; align-items: center; gap: 12px; font-size: 13px;
+}
+.log-item:last-child { border-bottom: none; }
+.log-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.log-dot.green { background: var(--green); }
+.log-dot.red { background: var(--red); }
+.log-dot.amber { background: var(--amber); }
+.log-dot.gray { background: var(--gray-300); }
+.log-dot.blue { background: var(--blue); }
+.log-text { flex: 1; color: var(--gray-700); }
+.log-time { font-size: 12px; color: var(--gray-400); white-space: nowrap; }
+
+/* ── BED GRID ── */
+.floor-section { margin-bottom: 32px; }
+.floor-header {
+  font-family: var(--font-h); font-weight: 700; font-size: 15px; color: var(--gray-900);
+  margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
+  padding-bottom: 8px; border-bottom: 1px solid var(--gray-200);
+}
+.floor-header .floor-count { font-size: 12px; color: var(--gray-400); font-weight: 500; font-family: var(--font-b); }
+.bed-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; }
+.bed-card {
+  background: #fff; border-radius: 12px; padding: 16px;
+  border: 2px solid var(--gray-200); cursor: pointer; transition: all .15s;
+  position: relative;
+}
+.bed-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(20,80,140,.1); }
+.bed-card.available { border-color: var(--green); background: linear-gradient(135deg, #F0FDF4 0%, #fff 100%); }
+.bed-card.occupied { border-color: var(--blue); background: linear-gradient(135deg, var(--blue-l) 0%, #fff 100%); }
+.bed-card.reserved { border-color: var(--amber); background: linear-gradient(135deg, var(--amber-l) 0%, #fff 100%); }
+.bed-card.maintenance { border-color: var(--gray-300); background: linear-gradient(135deg, var(--gray-100) 0%, #fff 100%); }
+.bed-number { font-family: var(--font-h); font-weight: 800; font-size: 24px; color: var(--gray-900); margin-bottom: 4px; }
+.bed-status-label {
+  display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .5px; padding: 2px 8px; border-radius: 4px; margin-bottom: 6px;
+}
+.bed-status-label.available { background: var(--green-l); color: var(--green); }
+.bed-status-label.occupied { background: var(--blue-l); color: var(--blue); }
+.bed-status-label.reserved { background: var(--amber-l); color: var(--amber); }
+.bed-status-label.maintenance { background: var(--gray-100); color: var(--gray-500); }
+.bed-type-badge {
+  position: absolute; top: 10px; right: 10px;
+  font-size: 10px; font-weight: 600; color: var(--gray-400);
+  background: var(--gray-50); padding: 2px 6px; border-radius: 4px; text-transform: capitalize;
+}
+.bed-occupant { font-size: 12px; color: var(--gray-700); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bed-date { font-size: 11px; color: var(--gray-400); }
+.bed-note { font-size: 11px; color: var(--gray-400); font-style: italic; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ── MODAL ── */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(10,22,40,.5); z-index: 1000;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity .2s;
+}
+.modal-overlay.open { opacity: 1; pointer-events: auto; }
+.modal {
+  background: #fff; border-radius: 16px; padding: 32px; width: 440px; max-width: 90vw;
+  box-shadow: 0 20px 60px rgba(10,22,40,.2); max-height: 90vh; overflow-y: auto;
+}
+.modal-title { font-family: var(--font-h); font-weight: 700; font-size: 18px; margin-bottom: 20px; }
+.modal-close {
+  position: absolute; top: 16px; right: 16px; background: none; border: none;
+  font-size: 20px; color: var(--gray-400); cursor: pointer;
+}
+.form-group { margin-bottom: 16px; }
+.form-label { display: block; font-size: 12px; font-weight: 600; color: var(--gray-700); margin-bottom: 4px; text-transform: uppercase; letter-spacing: .3px; }
+.form-input, .form-select, .form-textarea {
+  width: 100%; padding: 10px 12px; border-radius: 8px; border: 1.5px solid var(--gray-200);
+  font-size: 14px; font-family: var(--font-b); color: var(--gray-900); outline: none;
+  transition: border-color .15s;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--blue); }
+.form-textarea { resize: vertical; min-height: 60px; }
+.modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 24px; }
+
+/* ── VOUCHER TABLE ── */
+.voucher-table-wrap {
+  background: #fff; border-radius: 12px; border: 1px solid var(--gray-200);
+  box-shadow: 0 1px 4px rgba(20,80,140,.04); overflow: hidden;
+}
+.voucher-table { width: 100%; border-collapse: collapse; }
+.voucher-table th {
+  text-align: left; padding: 12px 16px; font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: .5px; color: var(--gray-500);
+  background: var(--gray-50); border-bottom: 1px solid var(--gray-200);
+}
+.voucher-table td { padding: 12px 16px; font-size: 13px; border-bottom: 1px solid var(--gray-50); color: var(--gray-700); }
+.voucher-table tr:last-child td { border-bottom: none; }
+.voucher-table tr:hover { background: var(--baby-pale); }
+.status-badge {
+  display: inline-block; font-size: 11px; font-weight: 700; padding: 3px 10px;
+  border-radius: 6px; text-transform: capitalize;
+}
+.status-badge.arrived { background: var(--green-l); color: var(--green); }
+.status-badge.no_show { background: var(--red-l); color: var(--red); }
+.status-badge.expired { background: var(--gray-100); color: var(--gray-500); }
+.status-badge.cancelled { background: var(--gray-100); color: var(--gray-500); }
+.status-badge.pending { background: var(--amber-l); color: var(--amber); }
+.status-badge.accepted { background: var(--blue-l); color: var(--blue); }
+
+/* ── EMPTY STATE ── */
+.empty-state {
+  text-align: center; padding: 48px 20px; color: var(--gray-400);
+}
+.empty-state .empty-icon { font-size: 48px; margin-bottom: 12px; opacity: .5; }
+.empty-state .empty-text { font-size: 15px; font-weight: 500; }
+.empty-state .empty-sub { font-size: 13px; margin-top: 4px; }
+
+/* ── TOAST ── */
+.toast-container { position: fixed; top: 20px; right: 20px; z-index: 2000; display: flex; flex-direction: column; gap: 8px; }
+.toast {
+  background: var(--navy); color: #fff; padding: 12px 20px; border-radius: 10px;
+  font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 8px;
+  box-shadow: 0 8px 24px rgba(10,22,40,.3);
+  animation: toast-in .3s ease, toast-out .3s ease 3.5s forwards;
+  max-width: 360px;
+}
+.toast.success { border-left: 3px solid var(--green); }
+.toast.error { border-left: 3px solid var(--red); }
+.toast.info { border-left: 3px solid var(--baby-blue); }
+@keyframes toast-in { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes toast-out { from { opacity: 1; } to { opacity: 0; transform: translateX(40px); } }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .sidebar { width: 60px; }
+  .sidebar .logo-sub, .sidebar .nav-item span:not(.nav-icon),
+  .sidebar .nav-badge, .sidebar .user-name, .sidebar .user-role,
+  .sidebar .sidebar-section-label, .sidebar .mea-wordmark { display: none; }
+  .sidebar .nav-item { justify-content: center; padding: 12px 0; }
+  .sidebar .nav-item .nav-icon { width: auto; font-size: 18px; }
+  .sidebar-logo { justify-content: center; padding: 16px 8px; }
+  .sidebar-footer { padding: 12px 8px; }
+  .user-chip { justify-content: center; }
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+  .timer-grid { grid-template-columns: 1fr; }
+  .bed-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+}
+
+/* ── ASSIGN BED DROPDOWN ── */
+.assign-bed-wrap { position: relative; display: inline-block; }
+.assign-bed-menu {
+  position: absolute; bottom: 100%; left: 0; margin-bottom: 4px;
+  background: #fff; border: 1px solid var(--gray-200); border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(10,22,40,.15); padding: 8px; min-width: 200px;
+  z-index: 100; display: none; max-height: 200px; overflow-y: auto;
+}
+.assign-bed-menu.open { display: block; }
+.assign-bed-option {
+  padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 13px;
+  display: flex; align-items: center; gap: 8px; transition: background .1s;
+}
+.assign-bed-option:hover { background: var(--gray-50); }
+.assign-bed-option .bed-num { font-weight: 700; font-family: var(--font-h); }
+
+/* ── NOTIFICATION TOGGLE ── */
+.notif-toggle {
+  display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--gray-500);
+  cursor: pointer; user-select: none;
+}
+.notif-toggle input { accent-color: var(--blue); width: 16px; height: 16px; }
+</style>
+</head>
+<body>
+
+<!-- ── LOGIN OVERLAY ── -->
+<div class="login-overlay" id="login-overlay">
+  <div class="login-card">
+    <div class="login-logo"><span class="me">ME</span><span class="a">A</span></div>
+    <div class="login-sub">Shelter Portal</div>
+    <form id="login-form">
+      <input class="login-field" type="email" id="login-email" placeholder="Email" value="coordinator@pinestreetinn.org" autocomplete="email">
+      <input class="login-field" type="password" id="login-pass" placeholder="Password" value="4321" autocomplete="current-password">
+      <button class="login-btn" type="submit">Sign In</button>
+      <div class="login-error" id="login-error"></div>
+    </form>
+    <div class="login-hint">Demo: coordinator@pinestreetinn.org / 4321</div>
+  </div>
+</div>
+
+<!-- ── APP SHELL ── -->
+<div class="shell" id="app-shell" style="display:none;">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div>
+        <div class="mea-wordmark"><span class="mea-me">ME</span><span class="mea-a">A</span></div>
+        <div class="logo-sub">Shelter Portal</div>
+      </div>
+    </div>
+
+    <div class="sidebar-section-label">Navigation</div>
+    <div class="nav-item active" data-screen="dashboard">
+      <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>
+      <span>Dashboard</span>
+    </div>
+    <div class="nav-item" data-screen="beds">
+      <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 012 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg></span>
+      <span>Beds</span>
+      <span class="nav-badge" id="nav-beds-badge">24</span>
+    </div>
+    <div class="nav-item" data-screen="vouchers">
+      <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/><path d="M13 7h5"/><path d="M13 11h5"/><path d="M13 15h3"/></svg></span>
+      <span>Vouchers</span>
+      <span class="nav-badge amber" id="nav-vouchers-badge">0</span>
+    </div>
+    <div class="nav-item" data-screen="timers">
+      <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+      <span>Active Timers</span>
+      <span class="nav-badge red" id="nav-timers-badge" style="display:none;">0</span>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="user-chip">
+        <div class="user-avatar" id="user-avatar">SC</div>
+        <div>
+          <div class="user-name" id="user-name">Sarah Chen</div>
+          <div class="user-role" id="user-role">Intake Coordinator</div>
+        </div>
+        <button class="logout-btn" onclick="logout()" title="Sign out">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div>
+        <div class="topbar-title" id="topbar-title">Dashboard</div>
+        <div class="topbar-subtitle" id="topbar-subtitle">Pine Street Inn &mdash; Real-time shelter management</div>
+      </div>
+      <div class="topbar-right">
+        <div id="connection-badge" class="live-badge demo-badge"><span class="dot"></span> DEMO</div>
+      </div>
+    </div>
+
+    <div class="content">
+      <!-- ── DASHBOARD ── -->
+      <div class="screen active" id="screen-dashboard">
+        <div class="stats-row" id="dash-stats"></div>
+        <div class="section-header">Active Vouchers <span class="count-badge" id="active-voucher-count">0</span></div>
+        <div class="timer-grid" id="dash-timer-grid"></div>
+        <div class="section-header" style="margin-top:8px;">Recent Activity</div>
+        <div class="activity-log" id="dash-activity-log"></div>
+      </div>
+
+      <!-- ── BEDS ── -->
+      <div class="screen" id="screen-beds">
+        <div id="beds-content"></div>
+      </div>
+
+      <!-- ── VOUCHERS ── -->
+      <div class="screen" id="screen-vouchers">
+        <div class="section-header">Active &amp; Pending Vouchers <span class="count-badge" id="active-voucher-count2">0</span></div>
+        <div class="timer-grid" id="voucher-active-grid"></div>
+        <div class="section-header" style="margin-top:16px;">Voucher History</div>
+        <div class="voucher-table-wrap" id="voucher-history-wrap"></div>
+      </div>
+
+      <!-- ── ACTIVE TIMERS ── -->
+      <div class="screen" id="screen-timers">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+          <div class="section-header" style="margin-bottom:0;">Active Countdown Timers <span class="count-badge" id="active-timer-count">0</span></div>
+          <label class="notif-toggle"><input type="checkbox" id="notif-toggle-cb"> Sound alerts at 5 min</label>
+        </div>
+        <div class="timer-full-grid" id="timer-full-grid"></div>
+        <div class="empty-state" id="timers-empty" style="display:none;">
+          <div class="empty-icon"><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity=".4"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+          <div class="empty-text">No active timers</div>
+          <div class="empty-sub">Active voucher countdowns will appear here</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── BED DETAIL MODAL ── -->
+<div class="modal-overlay" id="bed-modal">
+  <div class="modal" style="position:relative;">
+    <button class="modal-close" onclick="closeBedModal()">&times;</button>
+    <div class="modal-title" id="bed-modal-title">Bed 101</div>
+    <div class="form-group">
+      <label class="form-label">Status</label>
+      <select class="form-select" id="bed-modal-status">
+        <option value="available">Available</option>
+        <option value="occupied">Occupied</option>
+        <option value="reserved">Reserved</option>
+        <option value="maintenance">Maintenance</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Occupant Name</label>
+      <input class="form-input" id="bed-modal-occupant" placeholder="Enter occupant name">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Check-in Date</label>
+      <input class="form-input" type="date" id="bed-modal-checkin">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Expected Checkout</label>
+      <input class="form-input" type="date" id="bed-modal-checkout">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Notes</label>
+      <textarea class="form-textarea" id="bed-modal-notes" placeholder="Add notes..."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-red" id="bed-modal-checkout-btn" onclick="checkoutBed()" style="margin-right:auto;display:none;">Check Out</button>
+      <button class="btn btn-outline" onclick="closeBedModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveBed()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── ASSIGN BED MODAL ── -->
+<div class="modal-overlay" id="assign-bed-modal">
+  <div class="modal" style="position:relative;">
+    <button class="modal-close" onclick="closeAssignBedModal()">&times;</button>
+    <div class="modal-title">Assign Bed &mdash; <span id="assign-bed-name"></span></div>
+    <div class="form-group">
+      <label class="form-label">Select Available Bed</label>
+      <select class="form-select" id="assign-bed-select"></select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeAssignBedModal()">Cancel</button>
+      <button class="btn btn-green" onclick="confirmAssignBed()">Mark Arrived &amp; Assign</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── TOASTS ── -->
+<div class="toast-container" id="toast-container"></div>
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   MEA SHELTER PORTAL — Single-file SPA
+   ═══════════════════════════════════════════════════════ */
+
+// ── CONFIG ──
+const params = new URLSearchParams(location.search);
+let API_BASE = params.get('api') || '';
+let IS_LIVE = false;
+let soundAlerts = false;
+let alertedVouchers = new Set();
+
+// ── DEMO DATA ──
+const DEMO_PROFILE = { org_name: 'Pine Street Inn', org_type: 'shelter', address: '444 Harrison Ave, Boston, MA 02118' };
+
+const now = new Date();
+let DEMO_BEDS = [
+  { id:'b1', bed_number:'101', bed_type:'single', floor:1, status:'occupied', occupant_name:'Carlos Rivera', check_in_date:'2026-03-28', expected_checkout:'2026-04-04' },
+  { id:'b2', bed_number:'102', bed_type:'single', floor:1, status:'occupied', occupant_name:'Tanya Mitchell', check_in_date:'2026-03-28', expected_checkout:'2026-04-04' },
+  { id:'b3', bed_number:'103', bed_type:'single', floor:1, status:'occupied', occupant_name:'David Park', check_in_date:'2026-03-28', expected_checkout:'2026-04-04' },
+  { id:'b4', bed_number:'104', bed_type:'single', floor:1, status:'reserved', occupant_name:'Priya Chakrabarti', notes:'SWIFT program referral' },
+  { id:'b5', bed_number:'105', bed_type:'single', floor:1, status:'available' },
+  { id:'b6', bed_number:'106', bed_type:'single', floor:1, status:'available' },
+  { id:'b7', bed_number:'107', bed_type:'single', floor:1, status:'available' },
+  { id:'b8', bed_number:'108', bed_type:'single', floor:1, status:'available' },
+  { id:'b9', bed_number:'109', bed_type:'single', floor:1, status:'available' },
+  { id:'b10', bed_number:'110', bed_type:'single', floor:1, status:'available' },
+  { id:'b11', bed_number:'111', bed_type:'single', floor:1, status:'maintenance', notes:'Mattress replacement scheduled' },
+  { id:'b12', bed_number:'112', bed_type:'single', floor:1, status:'available' },
+  { id:'b13', bed_number:'201', bed_type:'single', floor:2, status:'occupied', occupant_name:'Maria Santos', check_in_date:'2026-03-15', expected_checkout:'2026-06-15', notes:'Transitional housing program' },
+  { id:'b14', bed_number:'202', bed_type:'single', floor:2, status:'occupied', occupant_name:'Jerome Williams', check_in_date:'2026-03-15', expected_checkout:'2026-06-15', notes:'Transitional housing program' },
+  { id:'b15', bed_number:'203', bed_type:'family', floor:2, status:'occupied', occupant_name:'Keisha Brown + 2 children', check_in_date:'2026-03-20', expected_checkout:'2026-06-20', notes:'Family unit' },
+  { id:'b16', bed_number:'204', bed_type:'single', floor:2, status:'available' },
+  { id:'b17', bed_number:'205', bed_type:'single', floor:2, status:'available' },
+  { id:'b18', bed_number:'206', bed_type:'bunk', floor:2, status:'available' },
+  { id:'b19', bed_number:'207', bed_type:'bunk', floor:2, status:'available' },
+  { id:'b20', bed_number:'208', bed_type:'bunk', floor:2, status:'available' },
+  { id:'b21', bed_number:'301', bed_type:'medical', floor:3, status:'occupied', occupant_name:'Robert Chen', check_in_date:'2026-03-25', expected_checkout:'2026-04-10', notes:'Post-detox recovery' },
+  { id:'b22', bed_number:'302', bed_type:'medical', floor:3, status:'available' },
+  { id:'b23', bed_number:'303', bed_type:'medical', floor:3, status:'available' },
+  { id:'b24', bed_number:'304', bed_type:'medical', floor:3, status:'available' },
+];
+
+let DEMO_VOUCHERS = [
+  { id:'v1', participant_name:'Lucia Fernandez', participant_phone:'(617) 555-4401', issued_by:'Marc Tohme \u2014 Suffolk County DA', issued_at: new Date(now.getTime() - 15*60000).toISOString(), expires_at: new Date(now.getTime() + 45*60000).toISOString(), status:'accepted', accepted_at: new Date(now.getTime() - 15*60000).toISOString(), notes:'Substance abuse program referral \u2014 needs medical floor bed' },
+  { id:'v2', participant_name:'Priya Chakrabarti', participant_phone:'(617) 555-7204', issued_by:'Marc Tohme \u2014 Suffolk County DA', issued_at:'2026-03-17T23:55:00', expires_at:'2026-03-18T00:55:00', status:'arrived', accepted_at:'2026-03-17T23:57:00', arrived_at:'2026-03-18T00:22:00', notes:'Arrived within 27 minutes' },
+  { id:'v3', participant_name:'Andre Thompson', participant_phone:'(617) 555-8190', issued_by:'John Blazo \u2014 Suffolk County DA', issued_at:'2026-03-20T14:30:00', expires_at:'2026-03-20T15:30:00', status:'arrived', accepted_at:'2026-03-20T14:32:00', arrived_at:'2026-03-20T15:05:00', notes:'Walk-in referral from district court' },
+  { id:'v4', participant_name:'Lisa Nguyen', issued_by:'Marc Tohme \u2014 Suffolk County DA', issued_at:'2026-03-22T21:00:00', expires_at:'2026-03-22T22:00:00', status:'no_show', accepted_at:'2026-03-22T21:05:00', notes:'Did not arrive within 60 minutes' },
+  { id:'v5', participant_name:'Michael Torres', participant_phone:'(617) 555-3344', issued_by:'John Blazo \u2014 Suffolk County DA', issued_at:'2026-03-25T18:15:00', expires_at:'2026-03-25T19:15:00', status:'expired', notes:'Shelter was at capacity' },
+];
+
+// ── STATE ──
+let beds = [...DEMO_BEDS];
+let vouchers = [...DEMO_VOUCHERS];
+let currentScreen = 'dashboard';
+let editingBedId = null;
+let assigningVoucherId = null;
+let timerInterval = null;
+
+// ── HELPERS ──
+function toast(msg, type = 'info') {
+  const c = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  t.className = 'toast ' + type;
+  t.innerHTML = (type === 'success' ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>' : type === 'error' ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>' : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#82CBF5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>') + ' ' + msg;
+  c.appendChild(t);
+  setTimeout(() => t.remove(), 4000);
+}
+
+function formatDate(d) {
+  if (!d) return '';
+  const dt = new Date(d);
+  return dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+function formatTime(d) {
+  if (!d) return '';
+  const dt = new Date(d);
+  return dt.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+}
+
+function getStats() {
+  const avail = beds.filter(b => b.status === 'available').length;
+  const occ = beds.filter(b => b.status === 'occupied').length;
+  const res = beds.filter(b => b.status === 'reserved').length;
+  const maint = beds.filter(b => b.status === 'maintenance').length;
+  const activeV = vouchers.filter(v => v.status === 'accepted' || v.status === 'pending').length;
+  const arrivals = vouchers.filter(v => {
+    if (v.status !== 'arrived' || !v.arrived_at) return false;
+    const arr = new Date(v.arrived_at);
+    const today = new Date();
+    return arr.toDateString() === today.toDateString();
+  }).length;
+  const rate = Math.round((occ / beds.length) * 100);
+  return { total_beds: beds.length, available: avail, occupied: occ, reserved: res, maintenance: maint, active_vouchers: activeV, today_arrivals: arrivals, occupancy_rate: rate };
+}
+
+function getActiveVouchers() {
+  return vouchers.filter(v => v.status === 'accepted' || v.status === 'pending');
+}
+
+function getTimerColor(ms) {
+  if (ms <= 0) return '#9CA3AF';
+  if (ms < 5 * 60000) return '#EF4444';
+  if (ms < 10 * 60000) return '#EF4444';
+  if (ms < 30 * 60000) return '#F59E0B';
+  return '#22C55E';
+}
+
+function getTimerClass(ms) {
+  if (ms <= 0) return 'expired';
+  if (ms < 5 * 60000) return 'urgent flash';
+  if (ms < 10 * 60000) return 'urgent';
+  if (ms < 30 * 60000) return 'warning';
+  return '';
+}
+
+function formatTimer(ms) {
+  if (ms <= 0) return '00:00';
+  const totalSec = Math.floor(ms / 1000);
+  const min = Math.floor(totalSec / 60);
+  const sec = totalSec % 60;
+  return String(min).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
+}
+
+function timerProgress(v) {
+  const total = new Date(v.expires_at).getTime() - new Date(v.issued_at).getTime();
+  const remaining = new Date(v.expires_at).getTime() - Date.now();
+  if (remaining <= 0) return 0;
+  return Math.max(0, Math.min(1, remaining / total));
+}
+
+function buildTimerRing(v, size = 120) {
+  const r = (size / 2) - 6;
+  const circumference = 2 * Math.PI * r;
+  const remaining = new Date(v.expires_at).getTime() - Date.now();
+  const progress = timerProgress(v);
+  const offset = circumference * (1 - progress);
+  const color = getTimerColor(remaining);
+  const isExpired = remaining <= 0;
+
+  return `
+    <div class="timer-ring-wrap${size > 140 ? ' lg' : ''}" style="width:${size}px;height:${size}px;">
+      <svg class="timer-ring" viewBox="0 0 ${size} ${size}">
+        <circle class="timer-ring-bg" cx="${size/2}" cy="${size/2}" r="${r}"/>
+        <circle class="timer-ring-fg" cx="${size/2}" cy="${size/2}" r="${r}"
+          stroke="${color}"
+          stroke-dasharray="${circumference}"
+          stroke-dashoffset="${offset}"
+          data-voucher-ring="${v.id}"
+          data-circumference="${circumference}"/>
+      </svg>
+      <div class="timer-time${size > 140 ? ' lg' : ''}${isExpired ? ' expired-text' : ''}" data-voucher-time="${v.id}" style="color:${color}">
+        ${isExpired ? 'EXPIRED' : formatTimer(remaining)}
+        ${!isExpired ? '<span class="label">remaining</span>' : ''}
+      </div>
+    </div>`;
+}
+
+// ── API LAYER ──
+async function apiGet(path) {
+  if (!IS_LIVE) return null;
+  try {
+    const r = await fetch(API_BASE + path, { headers: { 'Authorization': 'Bearer ' + sessionStorage.getItem('mea_token') } });
+    if (!r.ok) throw new Error(r.statusText);
+    return await r.json();
+  } catch(e) { console.warn('API error:', e); return null; }
+}
+
+async function apiPatch(path, body) {
+  if (!IS_LIVE) return null;
+  try {
+    const r = await fetch(API_BASE + path, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + sessionStorage.getItem('mea_token') },
+      body: JSON.stringify(body)
+    });
+    if (!r.ok) throw new Error(r.statusText);
+    return await r.json();
+  } catch(e) { console.warn('API error:', e); return null; }
+}
+
+async function apiPost(path, body) {
+  if (!IS_LIVE) return null;
+  try {
+    const r = await fetch(API_BASE + path, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + sessionStorage.getItem('mea_token') },
+      body: JSON.stringify(body)
+    });
+    if (!r.ok) throw new Error(r.statusText);
+    return await r.json();
+  } catch(e) { console.warn('API error:', e); return null; }
+}
+
+// ── LOGIN ──
+document.getElementById('login-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = document.getElementById('login-email').value.trim();
+  const pass = document.getElementById('login-pass').value;
+  const errEl = document.getElementById('login-error');
+
+  if (API_BASE) {
+    try {
+      const r = await fetch(API_BASE + '/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password: pass })
+      });
+      if (r.ok) {
+        const data = await r.json();
+        sessionStorage.setItem('mea_token', data.token);
+        IS_LIVE = true;
+        document.getElementById('connection-badge').className = 'live-badge';
+        document.getElementById('connection-badge').innerHTML = '<span class="dot"></span> LIVE';
+        enterApp();
+        return;
+      }
+    } catch(e) {}
+  }
+
+  // Demo fallback
+  if (email === 'coordinator@pinestreetinn.org' && pass === '4321') {
+    IS_LIVE = false;
+    enterApp();
+  } else {
+    errEl.textContent = 'Invalid credentials';
+  }
+});
+
+function enterApp() {
+  document.getElementById('login-overlay').classList.add('hidden');
+  document.getElementById('app-shell').style.display = 'flex';
+  loadData();
+  startTimers();
+}
+
+function logout() {
+  sessionStorage.removeItem('mea_token');
+  document.getElementById('login-overlay').classList.remove('hidden');
+  document.getElementById('app-shell').style.display = 'none';
+  if (timerInterval) clearInterval(timerInterval);
+}
+
+// ── DATA LOADING ──
+async function loadData() {
+  if (IS_LIVE) {
+    const [bedData, voucherData] = await Promise.all([
+      apiGet('/api/shelter/beds'),
+      apiGet('/api/shelter/vouchers')
+    ]);
+    if (bedData) beds = bedData;
+    if (voucherData) vouchers = voucherData;
+  }
+  renderAll();
+}
+
+// ── NAVIGATION ──
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', () => {
+    const screen = item.dataset.screen;
+    if (!screen) return;
+    switchScreen(screen);
+  });
+});
+
+function switchScreen(screen) {
+  currentScreen = screen;
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.screen === screen));
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + screen).classList.add('active');
+  const titles = { dashboard: 'Dashboard', beds: 'Bed Management', vouchers: 'Vouchers', timers: 'Active Timers' };
+  const subs = { dashboard: 'Pine Street Inn \u2014 Real-time shelter management', beds: 'Floor-by-floor bed status and assignment', vouchers: 'DA voucher processing and history', timers: 'Live countdown timers for active vouchers' };
+  document.getElementById('topbar-title').textContent = titles[screen] || '';
+  document.getElementById('topbar-subtitle').textContent = subs[screen] || '';
+  renderAll();
+}
+
+// ── RENDER ALL ──
+function renderAll() {
+  renderDashboard();
+  renderBeds();
+  renderVouchers();
+  renderTimers();
+  updateBadges();
+}
+
+function updateBadges() {
+  const stats = getStats();
+  document.getElementById('nav-beds-badge').textContent = stats.total_beds;
+  const activeV = getActiveVouchers().length;
+  document.getElementById('nav-vouchers-badge').textContent = activeV;
+  const timerBadge = document.getElementById('nav-timers-badge');
+  if (activeV > 0) {
+    timerBadge.textContent = activeV;
+    timerBadge.style.display = '';
+  } else {
+    timerBadge.style.display = 'none';
+  }
+}
+
+// ── DASHBOARD ──
+function renderDashboard() {
+  const stats = getStats();
+  const active = getActiveVouchers();
+
+  // Stat cards
+  document.getElementById('dash-stats').innerHTML = `
+    <div class="stat-card">
+      <div class="stat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--baby-blue)" stroke-width="2" stroke-linecap="round"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 012 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg></div>
+      <div class="stat-label">Total Beds</div>
+      <div class="stat-value">${stats.total_beds}</div>
+      <div class="stat-bar"><div class="stat-bar-fill" style="width:${stats.occupancy_rate}%;background:var(--blue);"></div></div>
+      <div class="stat-sub">${stats.occupancy_rate}% occupancy</div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-label">Available</div>
+      <div class="stat-value" style="color:var(--green);">${stats.available}</div>
+      <div class="stat-sub">Ready for intake</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Occupied</div>
+      <div class="stat-value">${stats.occupied}</div>
+      <div class="stat-sub">${stats.reserved} reserved, ${stats.maintenance} maintenance</div>
+    </div>
+    <div class="stat-card amber">
+      <div class="stat-label">Active Vouchers</div>
+      <div class="stat-value">${active.length > 0 ? '<span class="pulsing-dot"></span>' : ''}${stats.active_vouchers}</div>
+      <div class="stat-sub">From DA's office</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Today's Arrivals</div>
+      <div class="stat-value">${stats.today_arrivals}</div>
+      <div class="stat-sub">${formatDate(new Date())}</div>
+    </div>
+  `;
+
+  // Active voucher timer cards
+  if (active.length === 0) {
+    document.getElementById('dash-timer-grid').innerHTML = `
+      <div class="empty-state" style="grid-column:1/-1;">
+        <div class="empty-icon"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity=".4"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <div class="empty-text">No active vouchers</div>
+        <div class="empty-sub">Incoming DA vouchers will appear here with countdown timers</div>
+      </div>`;
+  } else {
+    document.getElementById('dash-timer-grid').innerHTML = active.map(v => renderTimerCard(v)).join('');
+  }
+  document.getElementById('active-voucher-count').textContent = active.length;
+
+  // Activity log
+  renderActivityLog();
+}
+
+function renderTimerCard(v, large = false) {
+  const remaining = new Date(v.expires_at).getTime() - Date.now();
+  const isExpired = remaining <= 0;
+  const cardClass = isExpired ? 'expired' : getTimerClass(remaining);
+  const ringSize = large ? 160 : 120;
+
+  let actions = '';
+  if (isExpired) {
+    actions = '<span class="expired-badge">EXPIRED</span>';
+  } else if (v.status === 'pending') {
+    actions = `
+      <button class="btn btn-green btn-sm" onclick="acceptVoucher('${v.id}')">Accept</button>
+      <button class="btn btn-red btn-sm" onclick="noShowVoucher('${v.id}')">Decline</button>`;
+  } else if (v.status === 'accepted') {
+    actions = `
+      <button class="btn btn-green btn-sm" onclick="openAssignBed('${v.id}')">Mark Arrived &amp; Assign Bed</button>
+      <button class="btn btn-red btn-sm" onclick="noShowVoucher('${v.id}')">No Show</button>`;
+  }
+
+  return `
+    <div class="timer-card ${cardClass}" data-voucher-card="${v.id}">
+      ${buildTimerRing(v, ringSize)}
+      <div class="timer-info">
+        <div class="timer-name${large ? ' lg' : ''}">${v.participant_name}</div>
+        <div class="timer-issuer">${v.issued_by}</div>
+        <div class="timer-issued-time">Issued ${formatTime(v.issued_at)}${v.participant_phone ? ' &bull; ' + v.participant_phone : ''}</div>
+        ${v.notes ? '<div class="timer-notes">' + v.notes + '</div>' : ''}
+        <div class="timer-actions">${actions}</div>
+      </div>
+    </div>`;
+}
+
+function renderActivityLog() {
+  const completed = vouchers.filter(v => v.status === 'arrived' || v.status === 'no_show' || v.status === 'expired');
+  completed.sort((a, b) => {
+    const da = new Date(a.arrived_at || a.expires_at);
+    const db = new Date(b.arrived_at || b.expires_at);
+    return db - da;
+  });
+  const recent = completed.slice(0, 10);
+
+  let html = '<div class="log-header">Recent Activity</div>';
+  if (recent.length === 0) {
+    html += '<div style="padding:20px;text-align:center;color:var(--gray-400);font-size:13px;">No recent activity</div>';
+  } else {
+    recent.forEach(v => {
+      let dotClass = 'gray', text = '';
+      if (v.status === 'arrived') {
+        dotClass = 'green';
+        const responseMin = v.arrived_at && v.issued_at ? Math.round((new Date(v.arrived_at) - new Date(v.issued_at)) / 60000) : '?';
+        text = `<strong>${v.participant_name}</strong> arrived (${responseMin} min)`;
+      } else if (v.status === 'no_show') {
+        dotClass = 'red';
+        text = `<strong>${v.participant_name}</strong> \u2014 no show`;
+      } else if (v.status === 'expired') {
+        dotClass = 'gray';
+        text = `<strong>${v.participant_name}</strong> \u2014 voucher expired`;
+      }
+      const time = v.arrived_at || v.expires_at;
+      html += `<div class="log-item"><div class="log-dot ${dotClass}"></div><div class="log-text">${text}</div><div class="log-time">${formatDate(time)} ${formatTime(time)}</div></div>`;
+    });
+  }
+  document.getElementById('dash-activity-log').innerHTML = html;
+}
+
+// ── BEDS ──
+function renderBeds() {
+  const floors = [
+    { num: 1, name: 'Emergency', beds: beds.filter(b => b.floor === 1) },
+    { num: 2, name: 'Transitional', beds: beds.filter(b => b.floor === 2) },
+    { num: 3, name: 'Medical / Recovery', beds: beds.filter(b => b.floor === 3) },
+  ];
+
+  let html = '';
+  floors.forEach(f => {
+    const avail = f.beds.filter(b => b.status === 'available').length;
+    html += `
+      <div class="floor-section">
+        <div class="floor-header">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--gray-400)" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg>
+          Floor ${f.num} \u2014 ${f.name} (${f.beds.length} beds)
+          <span class="floor-count">${avail} available</span>
+        </div>
+        <div class="bed-grid">
+          ${f.beds.map(b => renderBedCard(b)).join('')}
+        </div>
+      </div>`;
+  });
+
+  document.getElementById('beds-content').innerHTML = html;
+}
+
+function renderBedCard(b) {
+  let details = '';
+  if (b.status === 'occupied') {
+    details = `<div class="bed-occupant">${b.occupant_name || ''}</div><div class="bed-date">Since ${formatDate(b.check_in_date)}</div>`;
+  } else if (b.status === 'reserved') {
+    details = `<div class="bed-occupant">Reserved: ${b.occupant_name || ''}</div>`;
+  } else if (b.status === 'maintenance' && b.notes) {
+    details = `<div class="bed-note">${b.notes}</div>`;
+  }
+
+  return `
+    <div class="bed-card ${b.status}" onclick="openBedModal('${b.id}')">
+      <div class="bed-type-badge">${b.bed_type}</div>
+      <div class="bed-number">${b.bed_number}</div>
+      <div class="bed-status-label ${b.status}">${b.status}</div>
+      ${details}
+    </div>`;
+}
+
+// ── BED MODAL ──
+function openBedModal(id) {
+  editingBedId = id;
+  const b = beds.find(x => x.id === id);
+  if (!b) return;
+  document.getElementById('bed-modal-title').textContent = 'Bed ' + b.bed_number;
+  document.getElementById('bed-modal-status').value = b.status;
+  document.getElementById('bed-modal-occupant').value = b.occupant_name || '';
+  document.getElementById('bed-modal-checkin').value = b.check_in_date || '';
+  document.getElementById('bed-modal-checkout').value = b.expected_checkout || '';
+  document.getElementById('bed-modal-notes').value = b.notes || '';
+  document.getElementById('bed-modal-checkout-btn').style.display = b.status === 'occupied' ? '' : 'none';
+  document.getElementById('bed-modal').classList.add('open');
+}
+
+function closeBedModal() {
+  editingBedId = null;
+  document.getElementById('bed-modal').classList.remove('open');
+}
+
+async function saveBed() {
+  if (!editingBedId) return;
+  const b = beds.find(x => x.id === editingBedId);
+  if (!b) return;
+  b.status = document.getElementById('bed-modal-status').value;
+  b.occupant_name = document.getElementById('bed-modal-occupant').value;
+  b.check_in_date = document.getElementById('bed-modal-checkin').value;
+  b.expected_checkout = document.getElementById('bed-modal-checkout').value;
+  b.notes = document.getElementById('bed-modal-notes').value;
+
+  if (b.status === 'available') {
+    b.occupant_name = '';
+    b.check_in_date = '';
+    b.expected_checkout = '';
+  }
+
+  if (IS_LIVE) await apiPatch('/api/shelter/beds/' + editingBedId, b);
+  closeBedModal();
+  toast('Bed ' + b.bed_number + ' updated', 'success');
+  renderAll();
+}
+
+async function checkoutBed() {
+  if (!editingBedId) return;
+  const b = beds.find(x => x.id === editingBedId);
+  if (!b) return;
+  const name = b.occupant_name;
+  b.status = 'available';
+  b.occupant_name = '';
+  b.check_in_date = '';
+  b.expected_checkout = '';
+  if (IS_LIVE) await apiPost('/api/shelter/checkout', { bed_id: editingBedId });
+  closeBedModal();
+  toast(name + ' checked out of bed ' + b.bed_number, 'success');
+  renderAll();
+}
+
+// ── VOUCHERS ──
+function renderVouchers() {
+  const active = vouchers.filter(v => v.status === 'accepted' || v.status === 'pending');
+  document.getElementById('active-voucher-count2').textContent = active.length;
+
+  if (active.length === 0) {
+    document.getElementById('voucher-active-grid').innerHTML = `
+      <div class="empty-state" style="grid-column:1/-1;">
+        <div class="empty-icon"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".4"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/><path d="M13 7h5"/><path d="M13 11h5"/></svg></div>
+        <div class="empty-text">No active vouchers</div>
+      </div>`;
+  } else {
+    document.getElementById('voucher-active-grid').innerHTML = active.map(v => renderTimerCard(v)).join('');
+  }
+
+  // History table
+  const history = vouchers.filter(v => v.status !== 'accepted' && v.status !== 'pending');
+  history.sort((a, b) => new Date(b.issued_at) - new Date(a.issued_at));
+
+  let thtml = `<table class="voucher-table">
+    <thead><tr><th>Date</th><th>Participant</th><th>Issued By</th><th>Status</th><th>Response Time</th><th>Notes</th></tr></thead>
+    <tbody>`;
+  if (history.length === 0) {
+    thtml += '<tr><td colspan="6" style="text-align:center;color:var(--gray-400);padding:24px;">No voucher history</td></tr>';
+  } else {
+    history.forEach(v => {
+      let responseTime = '\u2014';
+      if (v.status === 'arrived' && v.arrived_at && v.issued_at) {
+        responseTime = Math.round((new Date(v.arrived_at) - new Date(v.issued_at)) / 60000) + ' min';
+      }
+      const statusLabel = v.status === 'no_show' ? 'No Show' : v.status;
+      thtml += `<tr>
+        <td>${formatDate(v.issued_at)}</td>
+        <td style="font-weight:600;">${v.participant_name}</td>
+        <td>${v.issued_by}</td>
+        <td><span class="status-badge ${v.status}">${statusLabel}</span></td>
+        <td>${responseTime}</td>
+        <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${v.notes || '\u2014'}</td>
+      </tr>`;
+    });
+  }
+  thtml += '</tbody></table>';
+  document.getElementById('voucher-history-wrap').innerHTML = thtml;
+}
+
+// ── ACTIVE TIMERS (full screen) ──
+function renderTimers() {
+  const active = getActiveVouchers();
+  document.getElementById('active-timer-count').textContent = active.length;
+
+  if (active.length === 0) {
+    document.getElementById('timer-full-grid').innerHTML = '';
+    document.getElementById('timers-empty').style.display = '';
+    return;
+  }
+  document.getElementById('timers-empty').style.display = 'none';
+
+  document.getElementById('timer-full-grid').innerHTML = active.map(v => {
+    const remaining = new Date(v.expires_at).getTime() - Date.now();
+    const isExpired = remaining <= 0;
+    const cardClass = isExpired ? 'expired' : getTimerClass(remaining);
+
+    let actions = '';
+    if (isExpired) {
+      actions = '<span class="expired-badge">EXPIRED</span>';
+    } else if (v.status === 'pending') {
+      actions = `
+        <button class="btn btn-green" onclick="acceptVoucher('${v.id}')">Accept Voucher</button>
+        <button class="btn btn-red" onclick="noShowVoucher('${v.id}')">Decline</button>`;
+    } else if (v.status === 'accepted') {
+      actions = `
+        <button class="btn btn-green btn-lg" onclick="openAssignBed('${v.id}')">Mark Arrived &amp; Assign Bed</button>
+        <button class="btn btn-red" onclick="noShowVoucher('${v.id}')">No Show</button>`;
+    }
+
+    return `
+      <div class="timer-card-full ${cardClass}" data-voucher-card="${v.id}">
+        ${buildTimerRing(v, 160)}
+        <div class="timer-info">
+          <div class="timer-name lg">${v.participant_name}</div>
+          <div class="timer-issuer">${v.issued_by}</div>
+          <div class="timer-issued-time">Issued ${formatTime(v.issued_at)}${v.participant_phone ? ' &bull; ' + v.participant_phone : ''}</div>
+          ${v.notes ? '<div class="timer-notes">' + v.notes + '</div>' : ''}
+          <div class="timer-actions">${actions}</div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// ── TIMER TICK ──
+function startTimers() {
+  if (timerInterval) clearInterval(timerInterval);
+  timerInterval = setInterval(tickTimers, 1000);
+}
+
+function tickTimers() {
+  const active = getActiveVouchers();
+
+  active.forEach(v => {
+    const remaining = new Date(v.expires_at).getTime() - Date.now();
+
+    // Update ring + time text everywhere this voucher appears
+    document.querySelectorAll(`[data-voucher-time="${v.id}"]`).forEach(el => {
+      if (remaining <= 0) {
+        el.className = el.className.replace(/ ?lg/g, '') + (el.className.includes('lg') ? ' lg' : '') + ' expired-text';
+        el.innerHTML = 'EXPIRED';
+        el.style.color = '#9CA3AF';
+      } else {
+        el.textContent = formatTimer(remaining);
+        el.style.color = getTimerColor(remaining);
+        // Re-add label
+        if (!el.querySelector('.label')) {
+          el.innerHTML = formatTimer(remaining) + '<span class="label">remaining</span>';
+        }
+      }
+    });
+
+    document.querySelectorAll(`[data-voucher-ring="${v.id}"]`).forEach(el => {
+      const circ = parseFloat(el.dataset.circumference);
+      const progress = timerProgress(v);
+      el.setAttribute('stroke-dashoffset', circ * (1 - progress));
+      el.setAttribute('stroke', getTimerColor(remaining));
+    });
+
+    // Update card classes
+    document.querySelectorAll(`[data-voucher-card="${v.id}"]`).forEach(el => {
+      const baseClass = el.className.includes('timer-card-full') ? 'timer-card-full' : 'timer-card';
+      if (remaining <= 0) {
+        el.className = baseClass + ' expired';
+      } else {
+        el.className = baseClass + ' ' + getTimerClass(remaining);
+      }
+    });
+
+    // Auto-expire
+    if (remaining <= 0 && v.status !== 'expired') {
+      v.status = 'expired';
+      if (IS_LIVE) apiPatch('/api/shelter/vouchers/' + v.id + '/status', { status: 'expired' });
+      toast(v.participant_name + ' voucher has expired', 'error');
+      renderAll();
+    }
+
+    // 5-minute alert
+    if (soundAlerts && remaining > 0 && remaining <= 5 * 60000 && !alertedVouchers.has(v.id)) {
+      alertedVouchers.add(v.id);
+      playAlert();
+      if ('Notification' in window && Notification.permission === 'granted') {
+        new Notification('MEA Shelter Portal', { body: v.participant_name + ' \u2014 less than 5 minutes remaining!', icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36"><rect width="36" height="36" rx="7" fill="%233A9AE8"/><text x="18" y="27" font-family="Arial" font-size="22" font-weight="900" text-anchor="middle" fill="white">M</text></svg>' });
+      }
+    }
+  });
+}
+
+function playAlert() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.frequency.value = 880;
+    gain.gain.value = 0.3;
+    osc.start();
+    osc.stop(ctx.currentTime + 0.2);
+    setTimeout(() => {
+      const osc2 = ctx.createOscillator();
+      const gain2 = ctx.createGain();
+      osc2.connect(gain2);
+      gain2.connect(ctx.destination);
+      osc2.frequency.value = 1100;
+      gain2.gain.value = 0.3;
+      osc2.start();
+      osc2.stop(ctx.currentTime + 0.3);
+    }, 250);
+  } catch(e) {}
+}
+
+// Notification toggle
+document.getElementById('notif-toggle-cb').addEventListener('change', function() {
+  soundAlerts = this.checked;
+  if (soundAlerts && 'Notification' in window && Notification.permission !== 'granted') {
+    Notification.requestPermission();
+  }
+  toast(soundAlerts ? 'Sound alerts enabled' : 'Sound alerts disabled', 'info');
+});
+
+// ── VOUCHER ACTIONS ──
+async function acceptVoucher(id) {
+  const v = vouchers.find(x => x.id === id);
+  if (!v) return;
+  v.status = 'accepted';
+  v.accepted_at = new Date().toISOString();
+  if (IS_LIVE) await apiPatch('/api/shelter/vouchers/' + id + '/accept');
+  toast('Voucher accepted for ' + v.participant_name, 'success');
+  renderAll();
+}
+
+async function noShowVoucher(id) {
+  const v = vouchers.find(x => x.id === id);
+  if (!v) return;
+  v.status = 'no_show';
+  if (IS_LIVE) await apiPatch('/api/shelter/vouchers/' + id + '/status', { status: 'no_show' });
+  toast(v.participant_name + ' marked as no-show', 'error');
+  renderAll();
+}
+
+function openAssignBed(voucherId) {
+  assigningVoucherId = voucherId;
+  const v = vouchers.find(x => x.id === voucherId);
+  if (!v) return;
+  document.getElementById('assign-bed-name').textContent = v.participant_name;
+
+  const available = beds.filter(b => b.status === 'available');
+  const sel = document.getElementById('assign-bed-select');
+  sel.innerHTML = available.map(b => {
+    const floorName = b.floor === 1 ? 'Emergency' : b.floor === 2 ? 'Transitional' : 'Medical';
+    return `<option value="${b.id}">Bed ${b.bed_number} \u2014 Floor ${b.floor} (${floorName}) \u2014 ${b.bed_type}</option>`;
+  }).join('');
+
+  if (available.length === 0) {
+    sel.innerHTML = '<option disabled>No beds available</option>';
+  }
+
+  document.getElementById('assign-bed-modal').classList.add('open');
+}
+
+function closeAssignBedModal() {
+  assigningVoucherId = null;
+  document.getElementById('assign-bed-modal').classList.remove('open');
+}
+
+async function confirmAssignBed() {
+  if (!assigningVoucherId) return;
+  const v = vouchers.find(x => x.id === assigningVoucherId);
+  const bedId = document.getElementById('assign-bed-select').value;
+  const b = beds.find(x => x.id === bedId);
+  if (!v || !b) return;
+
+  v.status = 'arrived';
+  v.arrived_at = new Date().toISOString();
+  b.status = 'occupied';
+  b.occupant_name = v.participant_name;
+  b.check_in_date = new Date().toISOString().split('T')[0];
+
+  if (IS_LIVE) await apiPatch('/api/shelter/vouchers/' + v.id + '/arrive', { bed_id: bedId });
+  closeAssignBedModal();
+  toast(v.participant_name + ' arrived \u2014 assigned to bed ' + b.bed_number, 'success');
+  renderAll();
+}
+
+// ── KEYBOARD SHORTCUT ──
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeBedModal();
+    closeAssignBedModal();
+  }
+});
+
+// Close modals on overlay click
+document.getElementById('bed-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeBedModal();
+});
+document.getElementById('assign-bed-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeAssignBedModal();
+});
+</script>
+</body>
+</html>
