@@ -679,10 +679,10 @@ const DEMO_PROFILE = { org_name: 'Gavin House', org_type: 'shelter', address: '6
 
 const now = new Date();
 let DEMO_BEDS = [
-  { id:'b1', bed_number:'101', bed_type:'single', floor:1, status:'occupied', occupant_name:'Carlos Rivera', check_in_date:'2026-03-28', expected_checkout:'2026-04-04' },
+  { id:'b1', bed_number:'101', bed_type:'single', floor:1, status:'occupied', occupant_name:'Mike Callahan', check_in_date:'2026-03-28', expected_checkout:'2026-04-04' },
   { id:'b2', bed_number:'102', bed_type:'single', floor:1, status:'occupied', occupant_name:'Tanya Mitchell', check_in_date:'2026-03-28', expected_checkout:'2026-04-04' },
-  { id:'b3', bed_number:'103', bed_type:'single', floor:1, status:'occupied', occupant_name:'David Park', check_in_date:'2026-03-28', expected_checkout:'2026-04-04' },
-  { id:'b4', bed_number:'104', bed_type:'single', floor:1, status:'reserved', occupant_name:'Priya Chakrabarti', notes:'SWIFT program referral' },
+  { id:'b3', bed_number:'103', bed_type:'single', floor:1, status:'occupied', occupant_name:'David Reilly', check_in_date:'2026-03-28', expected_checkout:'2026-04-04' },
+  { id:'b4', bed_number:'104', bed_type:'single', floor:1, status:'reserved', occupant_name:'Meg Sullivan', notes:'SWIFT program referral' },
   { id:'b5', bed_number:'105', bed_type:'single', floor:1, status:'available' },
   { id:'b6', bed_number:'106', bed_type:'single', floor:1, status:'available' },
   { id:'b7', bed_number:'107', bed_type:'single', floor:1, status:'available' },
@@ -692,14 +692,14 @@ let DEMO_BEDS = [
   { id:'b11', bed_number:'111', bed_type:'single', floor:1, status:'maintenance', notes:'Mattress replacement scheduled' },
   { id:'b12', bed_number:'112', bed_type:'single', floor:1, status:'available' },
   { id:'b13', bed_number:'201', bed_type:'single', floor:2, status:'occupied', occupant_name:'Maria Santos', check_in_date:'2026-03-15', expected_checkout:'2026-06-15', notes:'Transitional housing program' },
-  { id:'b14', bed_number:'202', bed_type:'single', floor:2, status:'occupied', occupant_name:'Jerome Williams', check_in_date:'2026-03-15', expected_checkout:'2026-06-15', notes:'Transitional housing program' },
-  { id:'b15', bed_number:'203', bed_type:'family', floor:2, status:'occupied', occupant_name:'Keisha Brown + 2 children', check_in_date:'2026-03-20', expected_checkout:'2026-06-20', notes:'Family unit' },
+  { id:'b14', bed_number:'202', bed_type:'single', floor:2, status:'occupied', occupant_name:'Steve Brennan', check_in_date:'2026-03-15', expected_checkout:'2026-06-15', notes:'Transitional housing program' },
+  { id:'b15', bed_number:'203', bed_type:'family', floor:2, status:'occupied', occupant_name:'Kelly Brown + 2 children', check_in_date:'2026-03-20', expected_checkout:'2026-06-20', notes:'Family unit' },
   { id:'b16', bed_number:'204', bed_type:'single', floor:2, status:'available' },
   { id:'b17', bed_number:'205', bed_type:'single', floor:2, status:'available' },
   { id:'b18', bed_number:'206', bed_type:'bunk', floor:2, status:'available' },
   { id:'b19', bed_number:'207', bed_type:'bunk', floor:2, status:'available' },
   { id:'b20', bed_number:'208', bed_type:'bunk', floor:2, status:'available' },
-  { id:'b21', bed_number:'301', bed_type:'medical', floor:3, status:'occupied', occupant_name:'Robert Chen', check_in_date:'2026-03-25', expected_checkout:'2026-04-10', notes:'Post-detox recovery' },
+  { id:'b21', bed_number:'301', bed_type:'medical', floor:3, status:'occupied', occupant_name:'Robert Flynn', check_in_date:'2026-03-25', expected_checkout:'2026-04-10', notes:'Post-detox recovery' },
   { id:'b22', bed_number:'302', bed_type:'medical', floor:3, status:'available' },
   { id:'b23', bed_number:'303', bed_type:'medical', floor:3, status:'available' },
   { id:'b24', bed_number:'304', bed_type:'medical', floor:3, status:'available' },
@@ -707,10 +707,10 @@ let DEMO_BEDS = [
 
 let DEMO_VOUCHERS = [
   { id:'v1', participant_name:'Lucia Fernandez', participant_phone:'(617) 555-4401', issued_by:'Marc Tohme \u2014 Suffolk County DA', issued_at: new Date(now.getTime() - 15*60000).toISOString(), expires_at: new Date(now.getTime() + 45*60000).toISOString(), status:'accepted', accepted_at: new Date(now.getTime() - 15*60000).toISOString(), notes:'Substance abuse program referral \u2014 needs medical floor bed' },
-  { id:'v2', participant_name:'Priya Chakrabarti', participant_phone:'(617) 555-7204', issued_by:'Marc Tohme \u2014 Suffolk County DA', issued_at:'2026-03-17T23:55:00', expires_at:'2026-03-18T00:55:00', status:'arrived', accepted_at:'2026-03-17T23:57:00', arrived_at:'2026-03-18T00:22:00', notes:'Arrived within 27 minutes' },
-  { id:'v3', participant_name:'Andre Thompson', participant_phone:'(617) 555-8190', issued_by:'John Blazo \u2014 Suffolk County DA', issued_at:'2026-03-20T14:30:00', expires_at:'2026-03-20T15:30:00', status:'arrived', accepted_at:'2026-03-20T14:32:00', arrived_at:'2026-03-20T15:05:00', notes:'Walk-in referral from district court' },
+  { id:'v2', participant_name:'Meg Sullivan', participant_phone:'(617) 555-7204', issued_by:'Marc Tohme \u2014 Suffolk County DA', issued_at:'2026-03-17T23:55:00', expires_at:'2026-03-18T00:55:00', status:'arrived', accepted_at:'2026-03-17T23:57:00', arrived_at:'2026-03-18T00:22:00', notes:'Arrived within 27 minutes' },
+  { id:'v3', participant_name:'Sean Gallagher', participant_phone:'(617) 555-8190', issued_by:'John Blazo \u2014 Suffolk County DA', issued_at:'2026-03-20T14:30:00', expires_at:'2026-03-20T15:30:00', status:'arrived', accepted_at:'2026-03-20T14:32:00', arrived_at:'2026-03-20T15:05:00', notes:'Walk-in referral from district court' },
   { id:'v4', participant_name:'Lisa Nguyen', issued_by:'Marc Tohme \u2014 Suffolk County DA', issued_at:'2026-03-22T21:00:00', expires_at:'2026-03-22T22:00:00', status:'no_show', accepted_at:'2026-03-22T21:05:00', notes:'Did not arrive within 60 minutes' },
-  { id:'v5', participant_name:'Michael Torres', participant_phone:'(617) 555-3344', issued_by:'John Blazo \u2014 Suffolk County DA', issued_at:'2026-03-25T18:15:00', expires_at:'2026-03-25T19:15:00', status:'expired', notes:'Shelter was at capacity' },
+  { id:'v5', participant_name:'Michael Russo', participant_phone:'(617) 555-3344', issued_by:'John Blazo \u2014 Suffolk County DA', issued_at:'2026-03-25T18:15:00', expires_at:'2026-03-25T19:15:00', status:'expired', notes:'Shelter was at capacity' },
 ];
 
 // ── STATE ──
